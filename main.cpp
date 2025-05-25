@@ -84,7 +84,41 @@ namespace IntroToGraph
 
 namespace Traversal
 {
-    
+    class NumberOfProvinces
+    {
+        V1<int> vis;
+        int res;
+        void dfsTraverse(const V2<int> &adjMat, int node)
+        {
+            if (vis[node])
+                return;
+            vis[node] = true;
+            for (int curr = 0; curr < adjMat.size(); ++curr)
+                if (adjMat[node][curr] && !vis[curr])
+                    dfsTraverse(adjMat, curr);
+        }
+
+    public:
+        NumberOfProvinces()
+        {
+            res = 0;
+        }
+        //: adj matrix
+        int dfsSolution(const V2<int> &graph)
+        {
+            const int len = graph.size();
+            vis = V1<int>(len, false);
+
+            for (int i = 0; i < len; ++i)
+            {
+                if (vis[i])
+                    continue;
+                dfsTraverse(graph, i);
+                ++res;
+            }
+            return res;
+        }
+    };
 }
 
 int main()
