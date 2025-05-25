@@ -178,6 +178,47 @@ public:
     }
 };
 
+class FloodFill
+{
+public:
+    V2<int> solve(V2<int> &graph, int sr, int sc, int color)
+    {
+        int m = graph.size();
+        if (graph.empty() || graph.at(sr).at(sc) == color)
+            return graph;
+        int n = graph.front().size();
+
+        std::queue<std::pair<int, int>> q;
+        q.push({sr, sc});
+
+        const int target = graph.at(sr).at(sc);
+
+        graph[sr][sc] = color;
+
+        int dx[4]{0, 0, 1, -1};
+        int dy[4]{-1, 1, 0, 0};
+
+        while (q.size())
+        {
+            auto [x, y] = q.front();
+            q.pop();
+            graph.at(x).at(y) = color;
+
+            for (int i = 0; i < 4; ++i)
+            {
+                int row = x + dx[i];
+                int col = y + dy[i];
+
+                if ((row >= 0) && (col >= 0) && (row < m) && (col < n) && graph.at(row).at(col) == target)
+                {
+                    graph.at(row).at(col) = color;
+                    q.push({row, col});
+                }
+            }
+        }
+    }
+};
+
 int main()
 {
     // 1 -> 2,6
