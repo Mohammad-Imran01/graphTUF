@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "iostream": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "utility": "cpp",
+        "type_traits": "cpp"
     }
 }

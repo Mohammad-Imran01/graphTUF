@@ -3,6 +3,7 @@
 #include <string>
 #include <queue>
 #include <stack>
+#include <utility>
 
 template <typename Type>
 using V1 = std::vector<Type>;
@@ -82,44 +83,100 @@ namespace IntroToGraph
     }
 } // intro to graph
 
-namespace Traversal
+class NumberOfProvinces
 {
-    class NumberOfProvinces
+    V1<int> vis;
+    int res;
+    void dfsTraverse(const V2<int> &adjMat, int node)
     {
-        V1<int> vis;
-        int res;
-        void dfsTraverse(const V2<int> &adjMat, int node)
-        {
-            if (vis[node])
-                return;
-            vis[node] = true;
-            for (int curr = 0; curr < adjMat.size(); ++curr)
-                if (adjMat[node][curr] && !vis[curr])
-                    dfsTraverse(adjMat, curr);
-        }
+        if (vis[node])
+            return;
+        vis[node] = true;
+        for (int curr = 0; curr < adjMat.size(); ++curr)
+            if (adjMat[node][curr] && !vis[curr])
+                dfsTraverse(adjMat, curr);
+    }
 
-    public:
-        NumberOfProvinces()
-        {
-            res = 0;
-        }
-        //: adj matrix
-        int dfsSolution(const V2<int> &graph)
-        {
-            const int len = graph.size();
-            vis = V1<int>(len, false);
+public:
+    NumberOfProvinces()
+    {
+        res = 0;
+    }
+    //: adj matrix
+    int dfsSolution(const V2<int> &graph)
+    {
+        const int len = graph.size();
+        vis = V1<int>(len, false);
 
-            for (int i = 0; i < len; ++i)
+        for (int i = 0; i < len; ++i)
+        {
+            if (vis[i])
+                continue;
+            dfsTraverse(graph, i);
+            ++res;
+        }
+        return res;
+    }
+};
+
+class RottenOranges
+{
+
+public:
+    int orangesRotting(V2<int> &grid)
+    {
+        if (grid.empty())
+            return 0;
+        int m = grid.size();
+        int n = grid[0].size();
+
+        std::queue<std::pair<int, int>> q;
+
+        int res = -1;
+        int fresh = 0;
+
+        for (int i = 0; i < m; ++i)
+        {
+            for (int j = 0; j < n; ++j)
             {
-                if (vis[i])
-                    continue;
-                dfsTraverse(graph, i);
-                ++res;
+                if (grid[i][j] == 2)
+                    q.push({i, j});
+                else if (grid[i][j] == 1)
+                    ++fresh;
             }
-            return res;
         }
-    };
-}
+
+        int dx[4] = {-1, 0, 1, 0};
+        int dy[4] = {0, -1, 0, 1};
+
+        while (q.size())
+        {
+            int sz = q.size();
+            while (sz--)
+            {
+                auto [row, col] = q.front();
+                q.pop();
+                for (int i = 0; i < 4; ++i)
+                {
+                    int r = row + dx[i];
+                    int c = col + dy[i];
+
+                    if ((r >= 0) && (c >= 0) && (r < m) && (c < n) && (grid[r][c] == 1))
+                    {
+                        q.push({r, c});
+                        grid[r][c] = 2;
+                        --fresh;
+                    }
+                }
+            }
+            ++res;
+        }
+
+        if (fresh > 0)
+            return -1;
+        return std::max(res, 0);
+    }
+};
 
 int main()
 {
