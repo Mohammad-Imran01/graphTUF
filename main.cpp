@@ -219,6 +219,47 @@ public:
     }
 };
 
+class DetectCycle
+{
+    V1<int> vis;
+    V2<int> adjList;
+    bool dfs(int node)
+    {
+        if (vis[node] == 2) // visited return👍
+            return false;
+        if (vis[node] == 1) // visiting already🤷‍♀️
+            return true;
+        vis[node] = 1; // visiting👏
+
+        for (const int &curr : adjList[node])
+        {
+            if (dfs(curr))
+                return true;
+        }
+        vis[node] = 2;
+        return false;
+    }
+
+public:
+    bool canFinish(int len, V2<int> &pre)
+    {
+        if (pre.size() < 2)
+            return true;
+        vis = V1<int>(len, 0);
+        adjList = V2<int>(len);
+
+        for (auto &p : pre)
+            adjList[p[0]].push_back(p[1]);
+
+        for (int i = 0; i < len; ++i)
+        {
+            if (vis[i] == 0 && dfs(i))
+                return false;
+        }
+        return true;
+    }
+};
+
 int main()
 {
     // 1 -> 2,6
