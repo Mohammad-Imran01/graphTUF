@@ -309,6 +309,52 @@ public:
     }
 };
 
+class SurroundedRegions
+{
+    int m, n;
+
+    int dx[4] = {-1, 1, 0, 0};
+    int dy[4] = {0, 0, -1, 1};
+    void solve(V2<char> &board, int x, int y)
+    {
+        if (x < 0 || y < 0 || x >= m || y >= n || board[x][y] != 'O')
+            return;
+        board[x][y] = '9';
+        for (int i = 0; i < 4; ++i)
+            solve(board, x + dx[i], y + dy[i]);
+    }
+
+public:
+    void solve(V2<char> &board)
+    {
+        if (board.empty())
+            return;                            //
+        m = board.size(), n = board[0].size(); //
+
+        for (int i = 0; i < m; ++i)
+        {
+            solve(board, i, 0);
+            solve(board, i, n - 1);
+        }
+        for (int j = 0; j < n; ++j)
+        {
+            solve(board, 0, j);
+            solve(board, m - 1, j);
+        }
+
+        for (int i = 0; i < m; ++i)
+        {
+            for (int j = 0; j < n; ++j)
+            {
+                if (board[i][j] == 'O')
+                    board[i][j] = 'X';
+                else if (board[i][j] == '9')
+                    board[i][j] = 'O';
+            }
+        }
+    }
+};
+
 int main()
 {
     // 1 -> 2,6
