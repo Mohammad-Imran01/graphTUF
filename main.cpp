@@ -260,6 +260,55 @@ public:
     }
 };
 
+// Nearest zero  for each cell, there is atleast one zero in the grid
+// Solved using multi bfs
+class UpdateMatrix
+{
+public:
+    V2<int> solve(V2<int> &mat)
+    {
+        if (mat.empty())
+            return mat;
+        const int m = mat.size();
+        const int n = mat[0].size();
+
+        std::queue<std::pair<int, int>> q;
+
+        for (int i = 0; i < m; ++i)
+        {
+            for (int j = 0; j < n; ++j)
+            {
+                if (mat[i][j])
+                    mat[i][j] = 1e8;
+                else
+                    q.push({i, j});
+            }
+        }
+
+        int dx[]{0, 0, -1, 1};
+        int dy[]{-1, 1, 0, 0};
+        while (!q.empty())
+        {
+            auto [x, y] = q.front();
+            q.pop();
+
+            for (int k = 0; k < 4; ++k)
+            {
+                int r = x + dx[k];
+                int c = y + dy[k];
+
+                if (r >= 0 && c >= 0 && r < m && c < n && mat[r][c] > mat[x][y] + 1)
+                {
+                    mat[r][c] = mat[x][y] + 1;
+                    q.push({r, c});
+                }
+            }
+        }
+
+        return mat;
+    }
+};
+
 int main()
 {
     // 1 -> 2,6
