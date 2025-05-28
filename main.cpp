@@ -355,6 +355,59 @@ public:
     }
 };
 
+class NumEnclaves
+{
+    int m, n;
+    void dfs(V2<int> &grid, int x, int y)
+    {
+        if (x < 0 || y < 0 || x >= grid.size() || y >= grid[x].size() || grid[x][y] < 1)
+            return;
+        grid[x][y] = -1;
+
+        std::cout << "\n"
+                  << x << ", " << y << ", " << grid.size() << ", " << grid[x].size();
+
+        dfs(grid, x, y - 1);
+        dfs(grid, x, y + 1);
+        dfs(grid, x - 1, y);
+        dfs(grid, x + 1, y);
+    }
+
+public:
+    int numEnclaves(V2<int> &grid)
+    {
+        if (grid.empty())
+            return 0;
+        m = grid.size();
+        n = grid[0].size();
+
+        // Remove boundary-connected land
+        for (int i = 0; i < m; ++i)
+        {
+            dfs(grid, i, 0);
+            dfs(grid, i, n - 1);
+        }
+        for (int i = 0; i < n; ++i)
+        {
+            dfs(grid, 0, i);
+            dfs(grid, m - 1, i);
+        }
+
+        // Count remaining land
+        int res = 0;
+        for (auto &g : grid)
+        {
+            for (int num : g)
+            {
+                if (num == 1)
+                    ++res;
+            }
+        }
+
+        return res;
+    }
+};
+
 int main()
 {
     // 1 -> 2,6
