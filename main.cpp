@@ -4,6 +4,8 @@
 #include <queue>
 #include <stack>
 #include <utility>
+#include <unordered_map>
+#include <unordered_set>
 
 template <typename Type>
 using V1 = std::vector<Type>;
@@ -405,6 +407,59 @@ public:
         }
 
         return res;
+    }
+};
+
+class WordLadder
+{
+
+    bool almostEqual(const std::string &s1, const std::string &s2)
+    {
+        if (s1.size() != s2.size())
+            return false;
+        int count = 0;
+
+        for (int i = 0; i < s1.size(); ++i)
+        {
+            count += (s1[i] != s2[i]);
+            if (count > 1)
+                return false;
+        }
+        return count == 1;
+    }
+
+public:
+    int ladderLength(std::string beginWord, std::string endWord, V1<std::string> &wordList)
+    {
+        std::unordered_set<std::string> words(wordList.begin(), wordList.end());
+        std::unordered_set<std::string> vis;
+        std::queue<std::string> q;
+        q.push(beginWord);
+        vis.insert(beginWord);
+
+        int time = 1;
+
+        while (q.size())
+        {
+            int len = q.size();
+            while (len--)
+            {
+                std::string word = q.front();
+                q.pop();
+                if (word == endWord)
+                    return time;
+                for (auto next : words)
+                {
+                    if (!vis.count(next) && almostEqual(word, next))
+                    {
+                        q.push(next);
+                        vis.insert(next);
+                    }
+                }
+            }
+            ++time;
+        }
+        return 0;
     }
 };
 
