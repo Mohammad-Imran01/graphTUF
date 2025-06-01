@@ -463,6 +463,51 @@ public:
     }
 };
 
+class Bipartite
+{
+    int *vis = nullptr;
+    bool colorIt(int node, V2<int> &graph)
+    {
+        std::queue<int> q;
+        q.push(node);
+        vis[node] = 0;
+        while (q.size())
+        {
+            int curr = q.front();
+            q.pop();
+            for (int it : graph[curr])
+            {
+                if (vis[it] == vis[curr])
+                    return false;
+                if (vis[it] == -1)
+                {
+                    vis[it] = !vis[curr];
+                    q.push(it);
+                }
+            }
+        }
+        return true;
+    }
+
+public:
+    bool isBipartite(V2<int> &graph)
+    {
+        if (graph.empty())
+            return true;
+        const int len = graph.size();
+        vis = new int[len];
+        std::fill(vis, vis + len, -1);
+
+        for (int i = 0; i < len; ++i)
+        {
+            if (vis[i] == -1)
+                if (!colorIt(i, graph))
+                    return false;
+        }
+        return true;
+    }
+};
+
 int main()
 {
     // 1 -> 2,6

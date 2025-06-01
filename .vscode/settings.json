@@ -4,6 +4,7 @@
         "queue": "cpp",
         "utility": "cpp",
         "type_traits": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "xutility": "cpp"
     }
 }
