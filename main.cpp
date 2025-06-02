@@ -546,7 +546,9 @@ public:
             if (!vis[i])
             {
                 if (loop(i, vis, adj))
+                {
                     return {};
+                }
             }
         }
 
