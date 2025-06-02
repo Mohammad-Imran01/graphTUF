@@ -508,6 +508,53 @@ public:
     }
 };
 
+class CanTakeourses
+{
+    V1<int> *graph = nullptr;
+    V1<int> res;
+    bool loop(int node, V1<int> &vis, V2<int> &adj)
+    {
+        if (vis[node] == 1)
+            return true;
+        if (vis[node] == 2)
+            return false;
+        vis[node] = 1;
+
+        for (auto curr : adj[node])
+            if (loop(curr, vis, adj))
+                return true;
+
+        res.push_back(node);
+        vis[node] = 2;
+
+        return false;
+    }
+
+public:
+    V1<int> findOrder(int len, V2<int> &graph_xy)
+    {
+        // if(len < 2) return true;
+        V2<int> adj(len, V1<int>());
+
+        for (auto arr : graph_xy)
+            adj[arr[0]].push_back(arr[1]);
+
+        V1<int> vis(len, 0);
+
+        for (int i = 0; i < len; ++i)
+        {
+            if (!vis[i])
+            {
+                if (loop(i, vis, adj))
+                    return {};
+            }
+        }
+
+        return res;
+        // return {res.rbegin(), res.rend()};
+    }
+};
+
 int main()
 {
     // 1 -> 2,6
