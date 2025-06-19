@@ -557,6 +557,48 @@ public:
     }
 };
 
+class ShortestPathUnitDistantEdges
+{
+public:
+    std::vector<int> solve(const std::vector<std::vector<int>> &adj, int src)
+    {
+        const int len = adj.size();
+        std::vector<int> vis(len, 1e8);
+        std::queue<std::pair<int, int>> q;
+
+        vis[src] = 0;
+        q.push({src, 0});
+
+        while (q.size())
+        {
+            int sz = q.size();
+
+            while (sz--)
+            {
+                // int node = q.front().first;
+                // int cost = q.front().second;
+                auto [node, cost] = q.front();
+
+                q.pop();
+
+                for (int curr : adj[node])
+                {
+                    if (vis[curr] > cost + 1)
+                    {
+                        vis[curr] = cost + 1;
+                        q.push({curr, cost + 1});
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < len; ++i)
+            if (vis[i] >= 1e8)
+                vis[i] = -1;
+
+        return vis;
+    }
+};
+
 int main()
 {
     // 1 -> 2,6
