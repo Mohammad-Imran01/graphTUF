@@ -8,6 +8,14 @@
     "xutility": "cpp",
     "ios": "cpp",
     "xstring": "cpp",
-    "xtr1common": "cpp"
+    "xtr1common": "cpp",
+    "deque": "cpp",
+    "initializer_list": "cpp",
+    "list": "cpp",
+    "stack": "cpp",
+    "unordered_map": "cpp",
+    "unordered_set": "cpp",
+    "xhash": "cpp",
+    "xmemory": "cpp"
   }
 }
