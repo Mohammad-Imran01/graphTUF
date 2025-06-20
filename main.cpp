@@ -12,6 +12,9 @@ using V1 = std::vector<Type>;
 template <typename Type>
 using V2 = std::vector<V1<Type>>;
 
+template <typename t1, typename t2>
+using V2Pair = V2<std::pair<t1, t2>>;
+
 namespace Utility
 {
     V2<int> adjListToMatrix(const V2<int> &adjList)
@@ -596,6 +599,59 @@ public:
                 vis[i] = -1;
 
         return vis;
+    }
+};
+
+class ShortestPathDAG
+{
+    std::stack<int> stk;
+    void dfs(int src, const V2Pair<int, int> &adj, std::vector<bool> &vis)
+    {
+        vis[src] = true;
+        for (auto currNode : adj[src])
+            if (!vis[currNode.first])
+                dfs(currNode.first, adj, vis);
+        stk.push(src);
+    }
+
+public:
+    V1<int> solve(int V, const V2<int> &edges, int src = 0)
+    {
+        if (V < 1)
+            return V1<int>{};
+
+        V2Pair<int, int> adj(V);
+
+        for (auto edge : edges)
+            adj[edge[0]].push_back({edge[1], edge[2]});
+
+        V1<bool> vis(V, false);
+        for (int i = 0; i < V; ++i)
+            if (!vis[i])
+                dfs(i, adj, vis);
+
+        V1<int> res(V, 1e9);
+        res[src] = 0;
+
+        while (stk.size())
+        {
+            int src = stk.top();
+            stk.pop();
+
+            if (res[src] < 1e9)
+            {
+                for (auto edge : adj[src])
+                {
+                    if (res[edge.first] > edge.second + res[src])
+                        res[edge.first] = edge.second + res[src];
+                }
+            }
+        }
+
+        for (int i = 0; i < V; ++i)
+            if (res[i] >= 1e9)
+                res[i] = -1;
+        return res;
     }
 };
 
