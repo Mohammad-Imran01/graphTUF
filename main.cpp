@@ -712,6 +712,63 @@ public:
     }
 };
 
+class PathMinEffort
+{
+public:
+    int solve(const V2<int> mat)
+    {
+        if (mat.empty() || mat.front().empty())
+            return -1;
+
+        int
+            m = mat.size(),
+            n = mat[0].size();
+
+        std::priority_queue<
+            Pr<int, Pr<int, int>>,
+            V1<Pr<int, Pr<int, int>>>,
+            std::greater<>>
+            pq;
+
+        V2<int> memo(m, V1<int>(n, 1e8));
+
+        memo[0][0] = 0;
+        pq.push({0, {0, 0}});
+
+        int dx[4] = {-1, 0, 0, 1};
+        int dy[4] = {0, -1, 1, 0};
+
+        while (pq.size())
+        {
+            auto cost = pq.top().first;
+            auto [row, col] = pq.top().second;
+            pq.pop();
+
+            if (row == m - 1 && col == n - 1)
+                return cost;
+
+            for (int i = 0; i < 4; ++i)
+            {
+                int r = dx[i] + row;
+                int c = dy[i] + col;
+
+                if (r < 0 || c < 0 || r >= m || c >= n)
+                    continue;
+
+                int diff = std::abs(mat[r][c] - mat[row][col]);
+                int newDiff = std::max(diff, cost);
+
+                if (memo[r][c] > newDiff)
+                {
+                    memo[r][c] = newDiff;
+                    pq.push({newDiff, {r, c}});
+                }
+            }
+        }
+        return -1;
+    }
+};
+
 int main()
 {
     // 1 -> 2,6
