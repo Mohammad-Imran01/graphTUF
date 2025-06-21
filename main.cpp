@@ -12,6 +12,9 @@ using V1 = std::vector<Type>;
 template <typename Type>
 using V2 = std::vector<V1<Type>>;
 
+template <typename TYPE1, typename TYPE2>
+using Pr = std::pair<TYPE1, TYPE2>;
+
 template <typename t1, typename t2>
 using V2Pair = V2<std::pair<t1, t2>>;
 
@@ -652,6 +655,60 @@ public:
             if (res[i] >= 1e9)
                 res[i] = -1;
         return res;
+    }
+};
+
+class ShortestPathInMaze
+{
+    V1<int> dx = {-1, -1, -1, 0, 0, 1, 1, 1};
+    V1<int> dy = {-1, 0, 1, -1, 1, -1, 0, 1};
+
+public:
+    int solve(V2<int> &mat)
+    {
+        if (mat.empty() || mat.front().empty())
+            return -1;
+        if (mat[0][0] || mat.back().back())
+            return -1;
+
+        int m = mat.size();
+        int n = mat.front().size();
+
+        for (auto &rows : mat)
+            for (int &num : rows)
+                num = num ? -1 : 1e8;
+
+        mat[0][0] = 1;
+        std::queue<Pr<int, int>> q;
+        q.push({0, 0});
+
+        while (q.size())
+        {
+            int len = q.size();
+            while (len--)
+            {
+                auto [row, col] = q.front();
+                q.pop();
+
+                for (int i = 0; i < 8; ++i)
+                {
+                    int r = row + dx[i];
+                    int c = col + dy[i];
+
+                    if (r < 0 || c < 0 || r >= m || c >= n || mat[r][c] < 0)
+                        continue;
+                    if (mat[r][c] > mat[row][col] + 1)
+                    {
+                        mat[r][c] = mat[row][col] + 1;
+                        q.push({r, c});
+                    }
+                }
+            }
+        }
+
+        return (mat.back().back() < 0 || mat.back().back() >= 1e8)
+                   ? -1
+                   : mat.back().back();
     }
 };
 
