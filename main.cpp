@@ -811,6 +811,44 @@ public:
     }
 };
 
+class NetworkDelayTime
+{
+public:
+    int solve(V2<int> &times, int n, int k)
+    {
+        V2<Pr<int, int>> adj(n + 1);
+        for (auto &time : times)
+            adj[time[0]].push_back({time[1], time[2]});
+        V1<int> vis(n + 1, 1e9);
+        vis[k] = 0;
+        std::queue<V1<int>> q;
+        q.push({k, 0});
+
+        while (q.size())
+        {
+            int src = q.front()[0], cost = q.front()[1];
+            q.pop();
+
+            for (auto [next, costNext] : adj[src])
+            {
+                if (cost + costNext < vis[next])
+                {
+                    vis[next] = cost + costNext;
+                    q.push({next, cost + costNext});
+                }
+            }
+        }
+        int res = -1e9;
+        for (int i = 1; i <= n; ++i)
+        {
+            if (vis[i] >= 1e9)
+                return -1;
+            res = std::max(res, vis[i]);
+        }
+        return res;
+    }
+};
+
 int main()
 {
     // 1 -> 2,6
