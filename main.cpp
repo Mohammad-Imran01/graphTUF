@@ -769,6 +769,48 @@ public:
     }
 };
 
+class CheapestFlightsWithKStops
+{
+public:
+    int solve(int n, int k, int src, int dest, V2<int> flights)
+    {
+        V2<Pr<int, int>> adj(n);
+        for (const auto &flight : flights)
+        {
+            adj[flight[0]].push_back({flight[1], flight[2]});
+        }
+        std::queue<V1<int>> q;
+        V1<int> vis(n, 1e9);
+        vis[src] = 0;
+        q.push({0, src, 0});
+        // {K, src, Cost}
+
+        while (q.size())
+        {
+            auto it = q.front();
+            q.pop();
+            int stops = it[0];
+            int node = it[1];
+            int cost = it[2];
+
+            if (stops > k)
+                continue;
+            for (auto curr : adj[node])
+            {
+                int currNode = curr.first;
+                int currCost = curr.second;
+
+                if (cost + currCost < vis[currNode])
+                {
+                    vis[currNode] = cost + currCost;
+                    q.push({stops + 1, currNode, vis[currNode]});
+                }
+            }
+        }
+        return (vis[dest] >= 1e9) ? -1 : vis[dest];
+    }
+};
+
 int main()
 {
     // 1 -> 2,6
