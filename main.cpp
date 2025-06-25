@@ -4,6 +4,7 @@
 #include <queue>
 #include <stack>
 #include <utility>
+#include <functional>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -846,6 +847,53 @@ public:
             res = std::max(res, vis[i]);
         }
         return res;
+    }
+};
+
+class NumberOfMinCostWaysToDest
+{
+    const long long MOD = 1e9 + 7;
+
+public:
+    int solve(int n, const V2<int> &edges)
+    {
+        V2<Pr<int, int>> adj(n);
+        for (const auto &edge : edges)
+        {
+            adj[edge[0]].push_back({edge[1], edge[2]});
+            adj[edge[1]].push_back({edge[0], edge[2]});
+        }
+        V1<int> dis(n, LLONG_MAX), ways(n, 0);
+
+        dis[0] = 0;
+        ways[0] = 1;
+
+        std::priority_queue<Pr<int, int>, V1<Pr<int, int>>, std::greater<>> pq;
+
+        while (pq.size())
+        {
+            auto [cost, node] = pq.top();
+            pq.pop();
+
+            if (cost > dis[node])
+                continue;
+
+            for (const auto &[curr, wt] : adj[node])
+            {
+                long long newCost = wt + cost;
+                if (newCost < dis[curr])
+                {
+                    dis[curr] = newCost;
+                    ways[curr] = ways[node];
+                    pq.push({newCost, curr});
+                }
+                else if (newCost == dis[curr])
+                {
+                    ways[curr] = (ways[curr] + ways[node]) % MOD;
+                }
+            }
+        }
+        return ways.back();
     }
 };
 
