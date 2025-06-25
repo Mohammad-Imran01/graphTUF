@@ -939,7 +939,7 @@ public:
 class BellManShortestPath
 {
 public:
-    V1<int> bellmanFord(int V, V2<int> &edges, int src)
+    V1<int> solve(int V, V2<int> &edges, int src)
     {
         // Code here
         V1<int> dis(V, 1e8);
