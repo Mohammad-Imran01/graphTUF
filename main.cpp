@@ -897,6 +897,43 @@ public:
     }
 };
 
+// User function Template for C++
+
+class MinimumMultiplicationsToReachEnd
+{
+public:
+    int minimumMultiplications(V1<int> &nums, int start, int end)
+    {
+        std::queue<Pr<int, int>> q;
+        V1<int> vis(100000, 1e9);
+
+        q.push({0, start});
+        vis[start] = 0;
+        // wt, node
+
+        while (q.size())
+        {
+            int steps = q.front().first, node = q.front().second;
+            q.pop();
+
+            if (node == end)
+                return steps;
+
+            for (int num : nums)
+            {
+                int newStart = (node * num) % 100000;
+                if (vis[newStart] > steps + 1)
+                {
+                    vis[newStart] = steps + 1;
+                    q.push({steps + 1, newStart});
+                }
+            }
+        }
+
+        return -1;
+    }
+};
+
 int main()
 {
     // 1 -> 2,6
