@@ -934,6 +934,43 @@ public:
     }
 };
 
+// User function Template for C++
+
+class BellManShortestPath
+{
+public:
+    V1<int> bellmanFord(int V, V2<int> &edges, int src)
+    {
+        // Code here
+        V1<int> dis(V, 1e8);
+        dis[src] = 0;
+
+        bool negCycle = false;
+
+        for (int iter = 0; iter < V - 1; ++iter)
+        {
+            for (const auto &edge : edges)
+            {
+                if (dis[edge[0]] != 1e8)
+                    if (dis[edge[0]] + edge[2] < dis[edge[1]])
+                        dis[edge[1]] = dis[edge[0]] + edge[2];
+            }
+        }
+        for (const auto &edge : edges)
+        {
+            if (dis[edge[0]] != 1e8)
+                if (dis[edge[0]] + edge[2] < dis[edge[1]])
+                {
+                    negCycle = true;
+                    break;
+                }
+        }
+        if (negCycle)
+            return {-1};
+        return dis;
+    }
+};
+
 int main()
 {
     // 1 -> 2,6
