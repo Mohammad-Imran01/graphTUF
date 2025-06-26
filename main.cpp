@@ -971,6 +971,29 @@ public:
     }
 };
 
+class FloydMarshallLaw
+{
+    static const int MAXI = 1e8;
+
+public:
+    void solve(V2<int> &mat)
+    {
+        int nodes = mat.size();
+
+        for (int node = 0; node < nodes; ++node)
+        {
+            for (int i = 0; i < nodes; ++i)
+            {
+                for (int j = 0; j < nodes; ++j)
+                {
+                    if (mat[i][node] < MAXI && mat[node][j] < MAXI)
+                        mat[i][j] = std::min(mat[i][j], mat[i][node] + mat[node][j]);
+                }
+            }
+        }
+    }
+};
+
 int main()
 {
     // 1 -> 2,6
