@@ -994,6 +994,53 @@ public:
     }
 };
 
+class MinSpanningTreePrims
+{
+public:
+    int solve(int V, const V2<int> &edges)
+    {
+        V2Pair<int, int> adj(V);
+        for (const auto &edge : edges)
+        {
+            int u = edge[0];
+            int v = edge[1];
+            int wt = edge[2];
+
+            adj[u].push_back({v, wt});
+            adj[v].push_back({u, wt});
+        }
+
+        V1<bool> vis(V, false);
+
+        int sum{};
+
+        std::priority_queue<Pr<int, int>, V1<Pr<int, int>>, std::greater<>> pq;
+
+        pq.push({0, 0});
+        // wt, node
+
+        while (pq.size())
+        {
+            auto [wt, node] = pq.top();
+            pq.pop();
+
+            if (vis[node])
+                continue;
+            vis[node] = true;
+
+            sum += wt;
+
+            for (auto [nd, cost] : adj[node])
+            {
+                if (!vis[nd])
+                    pq.push({cost, nd});
+            }
+        }
+
+        return sum;
+    }
+};
+
 int main()
 {
     // 1 -> 2,6
