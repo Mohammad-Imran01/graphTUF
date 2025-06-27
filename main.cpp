@@ -7,6 +7,8 @@
 #include <functional>
 #include <unordered_map>
 #include <unordered_set>
+#include <unordered_set>
+#include <set>
 
 template <typename Type>
 using V1 = std::vector<Type>;
@@ -1104,6 +1106,60 @@ public:
         }
 
         return cost;
+    }
+};
+
+class OperationsToConnectGraph
+{
+    struct Disjoint{
+        V1<int> parent, weight;
+        Disjoint(int nodes) {
+            parent.resize(nodes+1);
+            weight.resize(nodes+1);
+            for(int i = 0; i <= nodes; ++i) {
+                parent[i] = i;
+            }
+        }
+        int find(int node) {
+            if(parent[node] == node)
+                return node;
+            return parent[node] = find(parent[node]);
+        }
+        void doUnion(int u, int v) {
+            int pu = find(u);
+            int pv = find(v);
+
+            if(pu == pv)
+                return;
+
+            if(weight[pu] < weight[pv]) {
+                parent[pv] = pu;
+            } else if (weight[pv] < weight[pu]) {
+                parent[pu] = pv;
+            } else {
+                parent[pu] = pv;
+                ++weight[pv];
+            }
+        }
+    };
+public:
+    int makeConnected(int n, V2<int>& edges) {
+        int res = 0, extra=0;
+        Disjoint ds(n);
+
+        std::set<int> par;
+        for(const auto& edge: edges) {
+            if(ds.find(edge[0]) == ds.find(edge[1])) {
+                ++extra;
+                continue;
+            }
+            ds.doUnion(edge[0], edge[1]);
+        }
+        for(int i = 0; i < n; ++i) {
+            par.insert(ds.find(i));
+        }
+        return par.size()-1 <= extra ? par.size()-1:-1;
+
     }
 };
 
