@@ -1041,6 +1041,72 @@ public:
     }
 };
 
+class DisjointSet
+{
+    V1<int> par, wt;
+
+public:
+    DisjointSet(int nodes)
+    {
+        par.resize(nodes + 1);
+        wt.resize(nodes + 1, 0);
+
+        for (int i = 0; i <= nodes; ++i)
+            par[i] = i;
+    }
+    int find(int node)
+    {
+        if (par[node] == node)
+            return node;
+        return par[node] = find(par[node]);
+    }
+
+    void unionByWeight(int u, int v)
+    {
+        int parU = find(u);
+        int parV = find(v);
+
+        if (parV == parU)
+            return;
+
+        if (wt[parU] < wt[parV])
+            par[parU] = parV;
+        else if (wt[parV] < wt[parU])
+            par[parV] = parU;
+        else
+        {
+            par[parV] = parU;
+            ++wt[parU];
+        }
+    }
+};
+
+class KruskalMST
+{
+public:
+    int solve(int V, V2<int> edges)
+    {
+
+        std::sort(edges.begin(), edges.end(), [](const V2<int> &edge1, const V2<int> &edge2)
+                  { return edge1[2] < edge2[2]; });
+
+        DisjointSet ds(V);
+        int cost{0};
+
+        for (const auto &edge : edges)
+        {
+            int u = edge[0], v = edge[1], wt = edge[2];
+            if (ds.find(u) != ds.find(v))
+            {
+                cost += wt;
+                ds.unionByWeight(u, v);
+            }
+        }
+
+        return cost;
+    }
+};
+
 int main()
 {
     // 1 -> 2,6
