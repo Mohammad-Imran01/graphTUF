@@ -1111,55 +1111,104 @@ public:
 
 class OperationsToConnectGraph
 {
-    struct Disjoint{
+    struct Disjoint
+    {
         V1<int> parent, weight;
-        Disjoint(int nodes) {
-            parent.resize(nodes+1);
-            weight.resize(nodes+1);
-            for(int i = 0; i <= nodes; ++i) {
+        Disjoint(int nodes)
+        {
+            parent.resize(nodes + 1);
+            weight.resize(nodes + 1);
+            for (int i = 0; i <= nodes; ++i)
+            {
                 parent[i] = i;
             }
         }
-        int find(int node) {
-            if(parent[node] == node)
+        int find(int node)
+        {
+            if (parent[node] == node)
                 return node;
             return parent[node] = find(parent[node]);
         }
-        void doUnion(int u, int v) {
+        void doUnion(int u, int v)
+        {
             int pu = find(u);
             int pv = find(v);
 
-            if(pu == pv)
+            if (pu == pv)
                 return;
 
-            if(weight[pu] < weight[pv]) {
+            if (weight[pu] < weight[pv])
+            {
                 parent[pv] = pu;
-            } else if (weight[pv] < weight[pu]) {
+            }
+            else if (weight[pv] < weight[pu])
+            {
                 parent[pu] = pv;
-            } else {
+            }
+            else
+            {
                 parent[pu] = pv;
                 ++weight[pv];
             }
         }
     };
+
 public:
-    int makeConnected(int n, V2<int>& edges) {
-        int res = 0, extra=0;
+    int makeConnected(int n, V2<int> &edges)
+    {
+        int res = 0, extra = 0;
         Disjoint ds(n);
 
         std::set<int> par;
-        for(const auto& edge: edges) {
-            if(ds.find(edge[0]) == ds.find(edge[1])) {
+        for (const auto &edge : edges)
+        {
+            if (ds.find(edge[0]) == ds.find(edge[1]))
+            {
                 ++extra;
                 continue;
             }
             ds.doUnion(edge[0], edge[1]);
         }
-        for(int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; ++i)
+        {
             par.insert(ds.find(i));
         }
-        return par.size()-1 <= extra ? par.size()-1:-1;
+        return par.size() - 1 <= extra ? par.size() - 1 : -1;
+    }
+};
 
+class RemoveMaxStone
+{
+public:
+    int solve(V2<int> stones)
+    {
+
+        int rows = 0, cols = 0;
+        for (const auto &stone : stones)
+        {
+            rows = std::max(rows, stone[0]);
+            cols = std::max(cols, stone[1]);
+        }
+
+        DisjointSet ds(rows + cols + 2);
+        const int OFFSET = rows + 1;
+
+        for (auto stone : stones)
+        {
+            int row = stone[0];
+            int col = stone[1] + OFFSET;
+            ds.unionByWeight(row, col);
+        }
+
+        std::unordered_set<int> uniqueRoots;
+
+        for (auto stone : stones)
+        {
+            int root = ds.find(stone[0]);
+            uniqueRoots.insert(root);
+        }
+
+        return stones.size() - uniqueRoots.size();
     }
 };
 
