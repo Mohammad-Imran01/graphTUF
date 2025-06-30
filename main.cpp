@@ -1212,6 +1212,57 @@ public:
     }
 };
 
+class AccountsMerge
+{
+
+public:
+    V2<std::string> solve(const V2<std::string> &accounts)
+    {
+        DisjointSet ds(accounts.size() + 1);
+        std::unordered_map<std::string, int> mp;
+
+        for (int i = 0; i < accounts.size(); ++i)
+        {
+            for (int j = 1; j < accounts[i].size(); ++j)
+            {
+                const auto &email = accounts[i][j];
+                if (mp.count(email))
+                {
+                    ds.unionByWeight(mp[email], i);
+                }
+                else
+                {
+                    mp[email] = i;
+                }
+            }
+        }
+        std::unordered_map<int, std::unordered_set<std::string>> map;
+
+        for (int i = 0; i < accounts.size(); ++i)
+        {
+            for (int j = 1; j < accounts[i].size(); ++j)
+            {
+                const auto &name = accounts[i][0];
+                const auto &email = accounts[i][j];
+                int ind = ds.find(mp[email]);
+                map[ind].insert(email);
+            }
+        }
+
+        V2<std::string> res;
+
+        for (auto [ind, email] : map)
+        {
+            V1<std::string> curr;
+            curr.push_back(accounts[ind].front());
+            curr.insert(curr.end(), email.begin(), email.end());
+            res.push_back(curr);
+        }
+
+        return res;
+    }
+};
+
 int main()
 {
     // 1 -> 2,6
