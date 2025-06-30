@@ -1308,6 +1308,52 @@ public:
 
         return res;
     }
+    V1<int> solveDisjoint(int m, int n, V2<int> queries)
+    {
+        DisjointSet ds(m * n + 1);
+
+        V2<bool> vis(m, V1<bool>(n, false));
+
+        V1<int> res;
+
+        int dx[4]{-1, 0, 0, 1};
+        int dy[4]{0, -1, 1, 0};
+
+        int count = 0;
+
+        for (const auto &query : queries)
+        {
+            int x = query[0];
+            int y = query[1];
+
+            int ind = x * n + y;
+
+            if (!vis[x][y])
+            {
+                ++count;
+                vis[x][y] = true;
+
+                for (int k = 0; k < 4; ++k)
+                {
+                    int i = x + dx[k];
+                    int j = y + dy[k];
+
+                    if (i < 0 || j < 0 || i >= m || j >= n || !vis[i][j])
+                        continue;
+
+                    int neighInd = i * n + j;
+
+                    if (ds.find(neighInd) != ds.find(ind))
+                    {
+                        ds.unionByWeight(neighInd, ind);
+                        --count;
+                    }
+                }
+            }
+            res.push_back(count);
+        }
+        return res;
+    }
 };
 
 int main()
