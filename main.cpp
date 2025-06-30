@@ -1263,6 +1263,53 @@ public:
     }
 };
 
+class NumOfIslandsII
+{
+    void fill(V2<bool> &grid, int i, int j)
+    {
+        if (i < 0 || j < 0 || i >= grid.size() || j >= grid[0].size() || !grid[i][j])
+            return;
+        grid[i][j] = true;
+        fill(grid, i - 1, j);
+        fill(grid, i, j - 1);
+        fill(grid, i, j + 1);
+        fill(grid, i + 1, j);
+    }
+    int dumbHelper(V2<bool> grid)
+    {
+        int res = 0;
+        for (int i = 0; i < grid.size(); ++i)
+        {
+            for (int j = 0; j < grid[0].size(); ++j)
+            {
+                if (grid[i][j])
+                {
+                    res += 1;
+                    fill(grid, i, j);
+                }
+            }
+        }
+        return res;
+    }
+
+public:
+    V1<int> solveDumbWay(int m, int n, V2<int> queries)
+    {
+        V2<bool> grid(m, V1<bool>(n, false));
+        V1<int> res;
+
+        for (const auto &query : queries)
+        {
+            int x = query[0];
+            int y = query[1];
+            grid[x][y] = true;
+            res.push_back(dumbHelper(grid));
+        }
+
+        return res;
+    }
+};
+
 int main()
 {
     // 1 -> 2,6
